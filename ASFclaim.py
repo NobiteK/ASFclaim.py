@@ -28,7 +28,7 @@ def checkGame(lastLength):
     #THIS IS BAD, and definitely not scalable.
     if lastLength < len(codes):
         if lastLength + 10 < len(codes):
-            print("Only runs on the last 10 games")
+            print("🛑 Only runs on the last 10 games")
             lastLength = len(codes) - 10
 
         asfcommand = "!addlicense asf "
@@ -49,31 +49,35 @@ def checkGame(lastLength):
                 res = uh.read().decode()
             body = json.loads(res)
             if body["Success"]:
-                print("Success: " + asfcommand)
+                print("✅ Success: " + asfcommand)
                 pprint.pprint(body)
                 with open("lastlength", "w") as f:
                     f.write("{}".format(lastLength))
             else:
-                print("Error: ")
+                print("❌ Error: ")
                 pprint.pprint(body)
         except Exception as err:
-            print("error running '{}':".format(command))
+            print("🚨 Error running '{}':".format(command))
             print(err)
     else:
-        print("Found: {} and has: {}".format(len(codes), lastLength))
+        print("🔍 Found: {} and has: {}".format(len(codes), lastLength))
     return lastLength
 
 if __name__ == "__main__":
+    print("⏳ The script will start after a 6-second delay...")
+    time.sleep(6) # Delay for 6 seconds for ASF to launch IPC
+
     lastLength = 0
     try:
         with open("lastlength") as f:
             lastLength=int(f.read())
     except Exception as e:
-        print("Error with lastlength: {}".format(e))
+        print("❗ Error with lastlength: {}".format(e))
         lastLength = 0
         with open("lastlength", "w") as f:
             f.write("{}".format(lastLength))
 
     while True:
         lastLength = checkGame(lastLength)
+        print("⏰ The script will run again in 6 hours...")
         time.sleep(6 * 60 * 60) # Runs every six hours
